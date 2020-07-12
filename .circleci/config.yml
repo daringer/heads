@@ -8,7 +8,7 @@ jobs:
           name: Install dependencies
           command: |
             apt update
-            apt install -y build-essential zlib1g-dev uuid-dev libdigest-sha-perl libelf-dev bc bzip2 bison flex git gnupg iasl m4 nasm patch python wget gnat cpio ccache pkg-config cmake libusb-1.0-0-dev autoconf texinfo ncurses-dev
+            apt install -y build-essential zlib1g-dev uuid-dev libdigest-sha-perl libelf-dev bc bzip2 bison flex git gnupg iasl m4 nasm patch python wget gnat cpio ccache pkg-config cmake libusb-1.0-0-dev autoconf texinfo ncurses-dev doxygen graphviz udev libudev1 libudev-dev automake libtool
       - checkout
 
       - run:
@@ -167,6 +167,23 @@ jobs:
              tar zcvf build/librem_mini-NoTPM/logs.tar.gz build/log/*
       - store-artifacts:
           path: build/librem_mini-NoTPM
+      - run:
+          name: x230-nkstorecli
+          command: |
+            rm -rf build/x230-nkstorecli/* build/log/* && make --load 2 \
+                V=1 \
+                BOARD=x230-nkstorecli \
+          no_output_timeout: 3h
+      - run:
+          name: Ouput x230-nkstorecli hashes
+          command: |
+            cat build/x230-nkstorecli/hashes.txt \
+      - run:
+          name: Archiving build logs for x230-nkstorecli
+          command: |
+             tar zcvf build/x230-nkstorecli/logs.tar.gz build/log/*
+      - store-artifacts:
+          path: build/x230-nkstorecli
 
       - run:
           name: qemu-coreboot
